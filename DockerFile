@@ -1,0 +1,30 @@
+FROM python:3.11
+
+# Set working directory
+WORKDIR /var/www/
+
+# Install required system packages (adjust as needed)
+RUN apt-get -y update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libffi-dev \
+    python3-pip
+
+# Upgrade pip and install essential Python packages
+RUN pip install --upgrade pip
+RUN pip install wheel cython
+
+# Copy the application files into the container
+COPY . /var/www/
+
+# Ensure app.sh is executable
+RUN chmod +x /var/www/app.sh
+
+# Give write permissions to the working directory
+RUN chmod -R 777 /var/www/
+
+# Optionally set ownership to a specific user (e.g., root or a non-root user)
+# RUN chown -R root:root /var/www/
+
+# Set default command
+CMD ["/bin/bash", "./app.sh"]

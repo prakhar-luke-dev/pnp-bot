@@ -1,0 +1,35 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${CONTAINER_NAME}
+    ports:
+      - "${HOST_PORT}:${DOCKER_PORT}"
+    volumes:
+      - ./:/var/www/
+    networks:
+      - development
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-ai
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    ports:
+      - "5431:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - development
+
+networks:
+  development:
+    external: true
+
+volumes:
+  pgdata:
